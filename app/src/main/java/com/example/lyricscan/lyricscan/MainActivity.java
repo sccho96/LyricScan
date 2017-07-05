@@ -64,7 +64,9 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case WRITE_REQ_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(getApplicationContext(), "123", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "File Write Permission Granted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "File Write Permission Denied", Toast.LENGTH_SHORT).show();
                 }
                 break;
             default:
