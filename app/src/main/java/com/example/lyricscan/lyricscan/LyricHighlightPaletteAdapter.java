@@ -115,4 +115,9 @@ public class LyricHighlightPaletteAdapter extends RecyclerView.Adapter<LyricHigh
     public void addItem(PaletteColorStruct item) {
         mColorData.add(item);
     }
+
+    public void resetItem() {
+        mColorData = new ArrayList<PaletteColorStruct>();
+        mBitmapList = new ArrayList<Bitmap>();
+    }
 }

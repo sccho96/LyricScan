@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/main_tab"
+        android:id="@+id/home_tab"
         android:enabled="true"
         android:icon="@drawable/ic_home_black_24dp"
-        android:title="Main"/>
+        android:title="@string/home"/>
     <item
         android:id="@+id/workspace_tab"
         android:enabled="true"
         android:icon="@drawable/ic_palette_black_24dp"
-        android:title="Workspace"/>
+        android:title="@string/workspace"/>
     <item
         android:id="@+id/settings_tab"
         android:enabled="true"
         android:icon="@drawable/ic_settings_black_24dp"
-        android:title="Settings"/>
+        android:title="@string/settings"/>
 </menu>

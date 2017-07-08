@@ -7,14 +7,19 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
+
+import static com.example.lyricscan.lyricscan.MainActivity.ERROR_TAG;
 
 /**
  * LyricHighlightCanvasView (View)
@@ -56,7 +61,6 @@ public class LyricHighlightCanvasView extends View {
         }
     }
 
-    private static final String ERROR_TAG = "error-highlight-canvas";
     private static final float HIGHLIGHT_WIDTH = 20;
     private static final int DEFAULT_COLOR = Color.argb(100, 255, 0, 0);
     private static final int COLOR_ALPHA_MASK = 0xff000000;
@@ -64,15 +68,21 @@ public class LyricHighlightCanvasView extends View {
     private int mColor;
     private Path mHighlightPath;
     private Paint mPaint;
-    private File mSheetMusic;
+    private Bitmap mSheetMusic;
+
     private Paint mHighlightPaint;
     private Bitmap mHighlightBitmap;
+    private Bitmap mHighlightMatrix;
+    private Bitmap mMatrix;
     private Canvas mHighlightCanvas;
+    private Canvas mHighlightMatrixCanvas;
     private int mIdCount;
     private boolean mEraserEnabled;
     private Thread eraseThread;
     private EraseRunnable eraseRunnable;
     private ReentrantLock mPathListLock;
+
+    private boolean mEditEnabled;
 
     private boolean testFlag = true;
 
@@ -99,6 +109,8 @@ public class LyricHighlightCanvasView extends View {
                 attrs, R.styleable.LyricHighlightCanvasView, defStyle, 0);
 
         // Initialize member variables
+        mEditEnabled = true;
+
         mColor = DEFAULT_COLOR;
         mHighlightPath = new Path();
 
@@ -125,8 +137,6 @@ public class LyricHighlightCanvasView extends View {
 
         mPathListLock = new ReentrantLock();
 
-        setDrawingCacheEnabled(true);
-
         a.recycle();
     }
 
@@ -137,6 +147,8 @@ public class LyricHighlightCanvasView extends View {
         if (testFlag) {
             mHighlightBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
             mHighlightCanvas = new Canvas(mHighlightBitmap);
+            mHighlightMatrix = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+            mHighlightMatrixCanvas = new Canvas(mHighlightMatrix);
             testFlag = false;
         }
 
@@ -144,6 +156,8 @@ public class LyricHighlightCanvasView extends View {
         for (HighlightPathStruct item : mHighlightPathList) {
             mPaint.setColor(item.color);
             canvas.drawPath(item.path, mPaint);
+            mPaint.setColor(item.color | COLOR_ALPHA_MASK);
+            mHighlightMatrixCanvas.drawPath(item.path, mPaint);
             mHighlightPaint.setColor(item.id);
             mHighlightCanvas.drawPath(item.path, mHighlightPaint);
         }
@@ -151,15 +165,23 @@ public class LyricHighlightCanvasView extends View {
 
         mPaint.setColor(mColor);
         canvas.drawPath(mHighlightPath, mPaint);
+        mPaint.setColor(mColor | COLOR_ALPHA_MASK);
+        mHighlightMatrixCanvas.drawPath(mHighlightPath, mPaint);
         mHighlightPaint.setColor(mIdCount);
         mHighlightCanvas.drawPath(mHighlightPath, mHighlightPaint);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent touchEvent) {
+
+        if (!mEditEnabled) {
+            return false;
+        }
+
         int touchAction = touchEvent.getAction();
         float cursorX = Math.min(Math.max(touchEvent.getX(), 0), getWidth() - 1);
         float cursorY = Math.min(Math.max(touchEvent.getY(), 0), getHeight() - 1);
+
         switch (touchAction) {
             case MotionEvent.ACTION_DOWN:
                 // Initialize the highlight path
@@ -199,6 +221,7 @@ public class LyricHighlightCanvasView extends View {
                     mHighlightPath = new Path();
                 }
                 invalidate();
+                mMatrix = mHighlightMatrix;
                 return true;
             default:
                 return false;
@@ -218,28 +241,27 @@ public class LyricHighlightCanvasView extends View {
     }
 
     public Bitmap getHighlightBitmap() {
-        return getDrawingCache();
+        return mMatrix;
     }
 
-    public void setSheetMusic(File sheetMusic) {
-        mSheetMusic = sheetMusic;
-        if (mSheetMusic == null) {
-            mHighlightBitmap = null;
-            mHighlightCanvas = null;
-            return;
+    public void setSheetMusic(Uri sheetMusicUri) {
+        try {
+            mSheetMusic = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), sheetMusicUri);
+            // Initialize the bitmap and canvas objects
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    // Display the sheet music in the background
+                    mSheetMusic = Bitmap.createScaledBitmap(mSheetMusic, getWidth(), getHeight(), false);
+                    BitmapDrawable drawableImage = new BitmapDrawable(getResources(), mSheetMusic);
+                    setBackground(drawableImage);
+                    mHighlightBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+                    mHighlightCanvas = new Canvas(mHighlightBitmap);
+                }
+            });
+        } catch (IOException e) {
+            Log.e(ERROR_TAG, e.getMessage());
         }
-
-        // Initialize the bitmap and canvas objects
-        post(new Runnable() {
-            @Override
-            public void run() {
-                // Display the sheet music in the background
-                Drawable drawableImage = Drawable.createFromPath(mSheetMusic.getAbsolutePath());
-                setBackground(drawableImage);
-                mHighlightBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-                mHighlightCanvas = new Canvas(mHighlightBitmap);
-            }
-        });
     }
 
     private int searchPathById(int id) {
@@ -266,5 +288,17 @@ public class LyricHighlightCanvasView extends View {
                 return index;
             }
         }
+    }
+
+    public void setEditEnabled(boolean editEnabled) {
+        mEditEnabled = editEnabled;
+    }
+
+    public boolean getEditEnabled() {
+        return mEditEnabled;
+    }
+
+    public Bitmap getSheetMusic() {
+        return mSheetMusic;
     }
 }
