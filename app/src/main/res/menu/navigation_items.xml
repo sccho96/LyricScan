@@ -3,16 +3,16 @@
     <item
         android:id="@+id/main_tab"
         android:enabled="true"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@drawable/ic_home_tab"
         android:title="Main"/>
     <item
         android:id="@+id/workspace_tab"
         android:enabled="true"
-        android:icon="@drawable/ic_palette_black_24dp"
+        android:icon="@drawable/ic_workspace_tab"
         android:title="Workspace"/>
     <item
         android:id="@+id/settings_tab"
         android:enabled="true"
-        android:icon="@drawable/ic_settings_black_24dp"
+        android:icon="@drawable/ic_settings_tab"
         android:title="Settings"/>
 </menu>
