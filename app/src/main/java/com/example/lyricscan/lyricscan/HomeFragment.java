@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,9 @@ import static android.app.Activity.RESULT_OK;
 public class HomeFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
+    private HomeCardViewAdapter mAdapter;
 
     public HomeFragment() {
         // Empty constructor
@@ -47,6 +52,16 @@ public class HomeFragment extends Fragment {
                 startActivityForResult(fileOpenIntent, MainActivity.FILE_OPEN_REQ_CODE);
             }
         });
+
+        mRecyclerView = (RecyclerView)homeFragmentView.findViewById(R.id.homeRV);
+        mLayoutManager = new LinearLayoutManager(homeFragmentView.getContext(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
+        mAdapter = new HomeCardViewAdapter();
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.addItem(new HomeCardViewAdapter.CardStruct(null, "title1", "category1"));
+        mAdapter.addItem(new HomeCardViewAdapter.CardStruct(null, "title2", "category2"));
+        mAdapter.addItem(new HomeCardViewAdapter.CardStruct(null, "title3", "category3"));
         return homeFragmentView;
     }
 

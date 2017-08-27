@@ -21,5 +21,11 @@
         android:id="@+id/cameraBtn"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/startBtn"/>
+    
+    <android.support.v7.app.AlertController.RecycleListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/homeRV"/>
+
 
 </android.support.constraint.ConstraintLayout>
