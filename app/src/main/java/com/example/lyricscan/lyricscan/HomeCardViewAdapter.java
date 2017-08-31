@@ -26,15 +26,24 @@ public class HomeCardViewAdapter extends RecyclerView.Adapter<HomeCardViewAdapte
         public Bitmap preview;
         public String title;
         public String category;
-        public CardStruct(Bitmap preview, String title, String category) {
-            this.preview = preview;
-            this.title = title;
-            this.category = category;
-        }
+        public boolean fileSelect;
         public CardStruct(Bitmap preview, String title) {
             this.preview = preview;
             this.title = title;
             this.category = "";
+            this.fileSelect = false;
+        }
+        public CardStruct(Bitmap preview, String title, String category) {
+            this.preview = preview;
+            this.title = title;
+            this.category = category;
+            this.fileSelect = false;
+        }
+        public CardStruct(Bitmap preview, String title, String category, boolean fileSelect) {
+            this.preview = preview;
+            this.title = title;
+            this.category = category;
+            this.fileSelect = fileSelect;
         }
     }
 

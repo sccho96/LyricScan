@@ -43,15 +43,6 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View homeFragmentView = inflater.inflate(R.layout.fragment_home, container, false);
-        Button startButton = (Button)homeFragmentView.findViewById(R.id.startBtn);
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent fileOpenIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                fileOpenIntent.setType("*/*");
-                startActivityForResult(fileOpenIntent, MainActivity.FILE_OPEN_REQ_CODE);
-            }
-        });
 
         mRecyclerView = (RecyclerView)homeFragmentView.findViewById(R.id.homeRV);
         mLayoutManager = new LinearLayoutManager(homeFragmentView.getContext(), LinearLayoutManager.VERTICAL, false);
@@ -59,6 +50,20 @@ public class HomeFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new HomeCardViewAdapter();
         mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(new HomeCardViewAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(int position) {
+                HomeCardViewAdapter.CardStruct item = mAdapter.getItem(position);
+                if (item.fileSelect) {
+                    Intent fileOpenIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    fileOpenIntent.setType("*/*");
+                    startActivityForResult(fileOpenIntent, MainActivity.FILE_OPEN_REQ_CODE);
+                }
+            }
+        });
+
+        mAdapter.addItem(new HomeCardViewAdapter.CardStruct(null, "Files", "Load image from file", true));
         mAdapter.addItem(new HomeCardViewAdapter.CardStruct(null, "title1", "category1"));
         mAdapter.addItem(new HomeCardViewAdapter.CardStruct(null, "title2", "category2"));
         mAdapter.addItem(new HomeCardViewAdapter.CardStruct(null, "title3", "category3"));
