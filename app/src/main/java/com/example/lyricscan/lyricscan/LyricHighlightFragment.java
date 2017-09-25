@@ -1,12 +1,18 @@
 package com.example.lyricscan.lyricscan;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Parcel;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 
 /**
@@ -17,11 +23,11 @@ import android.view.ViewGroup;
  */
 public class LyricHighlightFragment extends Fragment {
 
-    private static final String FILE_PATH = "filePath";
+    private static final String BITMAP = "bitmap";
 
     private LyricHighlightCanvasView mHighlightCanvasView;
 
-    private Uri mFilePath;
+    private Bitmap mBitmap;
 
     public LyricHighlightFragment() {
         // Empty constructor
@@ -34,10 +40,10 @@ public class LyricHighlightFragment extends Fragment {
         return fragment;
     }
 
-    public static LyricHighlightFragment newInstance(Uri filePath) {
+    public static LyricHighlightFragment newInstance(Bitmap bitmap) {
         LyricHighlightFragment fragment = new LyricHighlightFragment();
         Bundle args = new Bundle();
-        args.putString(FILE_PATH, filePath.toString());
+        args.putParcelable(BITMAP, bitmap);
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,7 +52,7 @@ public class LyricHighlightFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mFilePath = Uri.parse(getArguments().getString(FILE_PATH));
+            mBitmap = getArguments().getParcelable(BITMAP);
         }
     }
 
@@ -58,17 +64,17 @@ public class LyricHighlightFragment extends Fragment {
 
         mHighlightCanvasView = (LyricHighlightCanvasView)lyricHighlightFragmentView.findViewById(R.id.highlightCanvas);
 
-        if (mFilePath != null) {
-            setSheetMusicFilePath(mFilePath);
+        if (mBitmap != null) {
+            setSheetMusicBitmap(mBitmap);
         }
 
         return lyricHighlightFragmentView;
     }
 
-    public void setSheetMusicFilePath(Uri filePath) {
-        mFilePath = filePath;
+    public void setSheetMusicBitmap(Bitmap bitmap) {
+        mBitmap = bitmap;
         if (mHighlightCanvasView != null) {
-            mHighlightCanvasView.setSheetMusic(mFilePath);
+            mHighlightCanvasView.setSheetMusic(mBitmap);
         }
     }
 
@@ -76,8 +82,8 @@ public class LyricHighlightFragment extends Fragment {
         mHighlightCanvasView.setEditEnabled(editEnabled);
     }
 
-    public void setEraserEnabled(boolean eraserEnabled) {
-        mHighlightCanvasView.setEraserEnabled(eraserEnabled);
+    public void setToolType(LyricHighlightPaletteAdapter.AnnotationToolType toolType) {
+        mHighlightCanvasView.setToolType(toolType);
     }
 
     public void setColor(int color) {

@@ -35,16 +35,28 @@ public class LyricHighlightPaletteAdapter extends RecyclerView.Adapter<LyricHigh
         void onClick(int position);
     }
 
+    public enum AnnotationToolType {
+        HIGHLIGHTER, ERASER, BREAKPOINT
+    }
+
     public static class PaletteColorStruct {
         public int color;
         public String name;
+        public AnnotationToolType toolType;
         public PaletteColorStruct(int color) {
             this.color = color;
-            name = "";
+            this.name = "";
+            this.toolType = AnnotationToolType.HIGHLIGHTER;
         }
         public PaletteColorStruct(int color, String name) {
             this.color = color;
             this.name = name;
+            this.toolType = AnnotationToolType.HIGHLIGHTER;
+        }
+        public PaletteColorStruct(AnnotationToolType toolType, String name) {
+            this.color = 0;
+            this.name = name;
+            this.toolType = toolType;
         }
     }
 
