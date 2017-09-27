@@ -30,7 +30,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.AnnotationTypeMismatchException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -211,7 +210,7 @@ public class HighlightWorkspaceFragment extends Fragment {
                             fileUri);
                     bitmapList.add(sheetMusicBitmap);
                 } else {
-                    Toast.makeText(getContext(), "Invalid files type", Toast.LENGTH_SHORT);
+                    Toast.makeText(getContext(), "Invalid files type", Toast.LENGTH_SHORT).show();
                 }
                 if (mNoFileMsgView != null) {
                     mNoFileMsgView.setText("");

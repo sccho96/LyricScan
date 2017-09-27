@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Language"
+        android:key="setting_cat_lang">
+
+        <ListPreference
+            android:key="setting_lang"
+            android:title="Language Settings"
+            android:summary="Pick language used for scanning"
+            android:entries="@array/language_list" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

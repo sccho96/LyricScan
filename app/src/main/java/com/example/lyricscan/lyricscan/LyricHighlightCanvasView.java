@@ -7,26 +7,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.pdf.PdfRenderer;
-import android.net.Uri;
-import android.os.Parcel;
-import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
-
-import static com.example.lyricscan.lyricscan.MainActivity.ERROR_TAG;
 
 /**
  * LyricHighlightCanvasView (View)
@@ -173,6 +160,7 @@ public class LyricHighlightCanvasView extends View {
         }
 
         mPathListLock.lock();
+        mHighlightMatrix.eraseColor(Color.TRANSPARENT);
         for (HighlightPathStruct item : mHighlightPathList) {
             mPaint.setColor(item.color);
             canvas.drawPath(item.path, mPaint);
