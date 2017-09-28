@@ -8,7 +8,8 @@
             android:key="setting_lang"
             android:title="Language Settings"
             android:summary="Pick language used for scanning"
-            android:entries="@array/language_list" />
+            android:entries="@array/language_list"
+            android:entryValues="@array/language_list_values"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

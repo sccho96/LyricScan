@@ -2,9 +2,11 @@ package com.example.lyricscan.lyricscan;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -61,6 +63,16 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                     return mHomeFragment;
                 case 1:
                     mHighlightWorkspaceFragment = HighlightWorkspaceFragment.newInstance();
+                    mHighlightWorkspaceFragment.setOnGetSettingsListener(new HighlightWorkspaceFragment.OnGetSettingsListener() {
+                        @Override
+                        public String onGetLanguageSetting() {
+                            if (mSettingsFragment != null) {
+                                return PreferenceManager.getDefaultSharedPreferences(mSettingsFragment
+                                        .getContext()).getString("setting_lang", "eng");
+                            }
+                            return "eng";
+                        }
+                    });
                     return mHighlightWorkspaceFragment;
                 case 2:
                     mSettingsFragment = SettingsFragment.newInstance();

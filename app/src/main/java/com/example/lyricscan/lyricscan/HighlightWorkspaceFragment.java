@@ -37,6 +37,10 @@ import static com.example.lyricscan.lyricscan.MainActivity.ERROR_TAG;
 
 public class HighlightWorkspaceFragment extends Fragment {
 
+    interface OnGetSettingsListener {
+        String onGetLanguageSetting();
+    }
+
     TabViewPager mPager;
     PagerAdapter mPagerAdapter;
     FloatingActionButton mEditButton;
@@ -50,6 +54,8 @@ public class HighlightWorkspaceFragment extends Fragment {
     TextView mNoFileMsgView;
 
     ArrayList<LyricHighlightPaletteAdapter.PaletteColorStruct> mPaletteList;
+
+    OnGetSettingsListener onGetSettingsListener;
 
     private class CanvasPagerAdapter extends FragmentStatePagerAdapter {
         public CanvasPagerAdapter(FragmentManager fm) {
@@ -81,6 +87,10 @@ public class HighlightWorkspaceFragment extends Fragment {
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void setOnGetSettingsListener(OnGetSettingsListener onGetSettingsListener) {
+        this.onGetSettingsListener = onGetSettingsListener;
     }
 
     @Override
@@ -242,8 +252,10 @@ public class HighlightWorkspaceFragment extends Fragment {
 
         int width, height;
 
+        String setting_lang = onGetSettingsListener.onGetLanguageSetting();
+
         TessBaseAPI tessBaseAPI = new TessBaseAPI();
-        tessBaseAPI.init(MainActivity.DATA_PATH, "eng");
+        tessBaseAPI.init(MainActivity.DATA_PATH, setting_lang);
 
         for (LyricHighlightFragment fragment : mFragmentList) {
 
